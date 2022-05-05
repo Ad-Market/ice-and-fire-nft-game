@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
-import { breakpoints, PRI_COLOR, } from "../utils/constants";
+import { breakpoints, PRI_COLOR, PRI_COLOR_FADED, } from "../utils/constants";
 import { getTotalWaves } from "../utils/wave.actions";
 import { getContract } from "../utils/contractUtils";
 import { EmptyContentText } from ".";
@@ -48,6 +48,9 @@ const BTN = styled.button`
   background-color: ${PRI_COLOR};
   color: #fff;
 
+  &:hover {
+    box-shadow: 0 0 0.8rem 0.1rem ${PRI_COLOR_FADED};
+  }
 
   @media screen and (min-width: 756px) {
     display: inline-flex;
@@ -102,7 +105,7 @@ const NavBar = ({ connectWallet, currentAccount }) => {
         {
           !currentAccount ? (
             <BTN onClick={connectWallet}>
-              Connect Wallet
+              Connect to Wallet on Rinkeby testnet
             </BTN>
           ) : <BTN onClick={() => waveCount()} >
             Welcome

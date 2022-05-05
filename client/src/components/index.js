@@ -259,3 +259,13 @@ export const EmptyContentText = styled.p`
   color: ${PRI_COLOR_FADED};
   text-align: center;
 `;
+
+export const WelcomeText = styled(CaptionText)`
+  word-break: break-word;
+  font-size: 7.2rem;
+  animation: ${slideInUp} 1.2s ease-in;
+  &:first-letter {
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+`;
