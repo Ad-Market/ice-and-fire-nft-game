@@ -15,65 +15,92 @@ struct FighterAttributes {
     uint256 characterIndex;
     string name;
     string imageURI;
-    uint256 hp;
-    uint256 maxHp;
+    uint256 healthPoints;
+    uint256 maxHealthPoints;
     uint256 attackDamage;
     string house;
-    int8 age;
+    uint8 age;
+}
+
+struct Fighter {
+    uint256 tokenId;
+    FighterAttributes attributes;
 }
 
 contract IceFire is ERC721 {
     FighterAttributes[] public defaultCharacters;
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-    mapping(uint256 => FighterAttributes) public nftHolderAttributes;
-    mapping(address => uint256) public nftHolders;
+    mapping(uint256 => Fighter) public nftHolderAttributes;
+    mapping(uint256 => address) public nftHolders;
+    mapping(address => uint256[]) private playerNFT;
+
+    event CharacterNFTMinted(
+        address sender,
+        uint256 tokenId,
+        uint256 characterIndex
+    );
+    event AttackComplete(
+        address sender,
+        uint256 attackerHealthPoints,
+        uint256 defenderHealthPoints
+    );
 
     // Data passed in to the contract when it's first created initializing the characters.
     // We're going to actually pass these values in from run.js.
     constructor(
         string[] memory characterNames,
         string[] memory characterImageURIs,
-        uint256[] memory characterHp,
+        uint256[] memory characterHealthPoints,
         uint256[] memory characterAttackDmg,
         string[] memory house,
-        int8[] memory age
+        uint8[] memory age
     ) payable ERC721("Ice and Fire", "IAF") {
         // Loop through all the characters, and save their values in our contract so
         // we can use them later when we mint our NFTs.
+        _tokenIds.increment();
         for (uint256 i = 0; i < characterNames.length; i += 1) {
             defaultCharacters.push(
                 FighterAttributes({
                     characterIndex: i,
                     name: characterNames[i],
                     imageURI: characterImageURIs[i],
-                    hp: characterHp[i],
-                    maxHp: characterHp[i],
+                    healthPoints: characterHealthPoints[i],
+                    maxHealthPoints: characterHealthPoints[i],
                     attackDamage: characterAttackDmg[i],
                     house: house[i],
                     age: age[i]
                 })
             );
         }
-        _tokenIds.increment();
     }
 
     function mintCharacterNFT(uint256 _characterIndex) external {
         uint256 newItemId = _tokenIds.current();
 
         _safeMint(msg.sender, newItemId);
-        nftHolderAttributes[newItemId] = FighterAttributes({
-            characterIndex: _characterIndex,
-            name: defaultCharacters[_characterIndex].name,
-            imageURI: defaultCharacters[_characterIndex].imageURI,
-            hp: defaultCharacters[_characterIndex].hp,
-            maxHp: defaultCharacters[_characterIndex].maxHp,
-            attackDamage: defaultCharacters[_characterIndex].attackDamage,
-            house: defaultCharacters[_characterIndex].house,
-            age: defaultCharacters[_characterIndex].age
+        nftHolderAttributes[newItemId] = Fighter({
+            attributes: FighterAttributes({
+                characterIndex: _characterIndex,
+                name: defaultCharacters[_characterIndex].name,
+                imageURI: defaultCharacters[_characterIndex].imageURI,
+                healthPoints: defaultCharacters[_characterIndex].healthPoints,
+                maxHealthPoints: defaultCharacters[_characterIndex]
+                    .maxHealthPoints,
+                attackDamage: defaultCharacters[_characterIndex].attackDamage,
+                house: defaultCharacters[_characterIndex].house,
+                age: defaultCharacters[_characterIndex].age
+            }),
+            tokenId: newItemId
         });
-        nftHolders[msg.sender] = newItemId;
+        nftHolders[newItemId] = msg.sender;
+        playerNFT[msg.sender].push(newItemId);
+        emit CharacterNFTMinted(msg.sender, newItemId, _characterIndex);
         _tokenIds.increment();
+    }
+
+    function getPlayerNFTs() public view returns (uint256[] memory) {
+        return playerNFT[msg.sender];
     }
 
     function tokenURI(uint256 _tokenId)
@@ -82,28 +109,30 @@ contract IceFire is ERC721 {
         override
         returns (string memory)
     {
-        FighterAttributes memory fighterAttributes = nftHolderAttributes[
-            _tokenId
-        ];
+        Fighter memory fighterAttributes = nftHolderAttributes[_tokenId];
 
-        string memory strHp = Strings.toString(fighterAttributes.hp);
-        string memory strMaxHp = Strings.toString(fighterAttributes.maxHp);
+        string memory strHealthPoints = Strings.toString(
+            fighterAttributes.attributes.healthPoints
+        );
+        string memory strMaxHealthPoints = Strings.toString(
+            fighterAttributes.attributes.maxHealthPoints
+        );
         string memory strAttackDamage = Strings.toString(
-            fighterAttributes.attackDamage
+            fighterAttributes.attributes.attackDamage
         );
 
         string memory json = Base64.encode(
             abi.encodePacked(
                 '{"name": "',
-                fighterAttributes.name,
+                fighterAttributes.attributes.name,
                 " -- NFT #: ",
                 Strings.toString(_tokenId),
                 '", "description": "This is an NFT that lets people play in the game Metaverse Slayer!", "image": "',
-                fighterAttributes.imageURI,
+                fighterAttributes.attributes.imageURI,
                 '", "attributes": [ { "trait_type": "Health Points", "value": ',
-                strHp,
+                strHealthPoints,
                 ', "max_value":',
-                strMaxHp,
+                strMaxHealthPoints,
                 '}, { "trait_type": "Attack Damage", "value": ',
                 strAttackDamage,
                 "} ]}"
@@ -115,5 +144,61 @@ contract IceFire is ERC721 {
         );
 
         return output;
+    }
+
+    function attackPlayer(uint256 attackerTokenId, uint256 defenderTokenId)
+        external
+    {
+        Fighter storage attacker = nftHolderAttributes[attackerTokenId];
+        Fighter storage defender = nftHolderAttributes[defenderTokenId];
+
+        require(
+            nftHolders[attackerTokenId] == msg.sender,
+            "You are not the owner of NFT"
+        );
+
+        require(
+            attacker.attributes.healthPoints > 0,
+            "Attacker does not have enough Health Points"
+        );
+        require(
+            defender.attributes.healthPoints > 0,
+            "Defender does not have enough Health Points"
+        );
+        if (
+            defender.attributes.healthPoints < attacker.attributes.attackDamage
+        ) {
+            defender.attributes.healthPoints = 0;
+        } else {
+            defender.attributes.healthPoints =
+                defender.attributes.healthPoints -
+                attacker.attributes.attackDamage;
+        }
+        emit AttackComplete(
+            msg.sender,
+            attacker.attributes.healthPoints,
+            defender.attributes.healthPoints
+        );
+    }
+
+    function getUserNFTAttributes(uint256 _tokenId)
+        public
+        view
+        returns (Fighter memory)
+    {
+        Fighter memory emptyStruct;
+        if (nftHolders[_tokenId] != address(0)) {
+            return nftHolderAttributes[_tokenId];
+        } else {
+            return emptyStruct;
+        }
+    }
+
+    function getAllDefaultCharacters()
+        public
+        view
+        returns (FighterAttributes[] memory)
+    {
+        return defaultCharacters;
     }
 }
