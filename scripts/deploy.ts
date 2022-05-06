@@ -16,32 +16,6 @@ const main = async () => {
   await iceFireContract.deployed();
   console.log("Contract deployed to:", iceFireContract.address);
 
-
-  let txn;
-  txn = await iceFireContract.mintCharacterNFT(0);
-  await txn.wait();
-  console.log("Minted NFT #1");
-
-  txn = await iceFireContract.mintCharacterNFT(1);
-  await txn.wait();
-  console.log("Minted NFT #2");
-
-  txn = await iceFireContract.mintCharacterNFT(2);
-  await txn.wait();
-  console.log("Minted NFT #3");
-
-  txn = await iceFireContract.mintCharacterNFT(1);
-  await txn.wait();
-  console.log("Minted NFT #4");
-
-  txn = await iceFireContract.attackPlayer(1, 2);
-  await txn.wait();
-
-  txn = await iceFireContract.attackPlayer(1, 2);
-  await txn.wait();
-
-  console.log("Done deploying and minting!");
-
 };
 
 const runMain = async () => {

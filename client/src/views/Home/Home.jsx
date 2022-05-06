@@ -52,7 +52,10 @@ const Home = props => {
         playersCount={playersCount}
         totalPlayers={totalPlayers}
       />
-
+      <img src={JS} alt={`h face`} width="100%" height="100%" />
+      <img src={JL} alt={`t face`} width="100%" height="100%" />
+      <img src={AS} alt={`y face`} width="100%" height="100%" />
+      <img src={IK} alt={`u face`} width="100%" height="100%" />
       {
         currentAccount ? (
           <>
@@ -101,10 +104,7 @@ const Home = props => {
               ) : null
             }
             <EmptyContentText>Create new fighter..</EmptyContentText>
-            <img src={JS} alt={`h face`} width="100%" height="100%" />
-            <img src={JL} alt={`t face`} width="100%" height="100%" />
-            <img src={AS} alt={`y face`} width="100%" height="100%" />
-            <img src={IK} alt={`u face`} width="100%" height="100%" />
+
             <CaptionsContainer>
               {
                 defaultFighters.map(fighter => (<CaptionCard >
