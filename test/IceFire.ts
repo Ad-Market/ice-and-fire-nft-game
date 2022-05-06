@@ -100,5 +100,13 @@ describe("IceFire", function () {
       }
 
     });
+  });
+
+  describe("getAllDefaultCharacters()", () => {
+    it("should get default fighters", async () => {
+      const defaultCharacters = await iceFireContract.getAllDefaultCharacters();
+      console.log(defaultCharacters)
+      expect(defaultCharacters.length).to.equal(3);
+    })
   })
 });

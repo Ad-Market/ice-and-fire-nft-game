@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { PRI_COLOR, breakpoints, PRI_COLOR_FADED } from "../utils/constants";
-import Design from "../assets/img/27629573.jpg";
+import Design from "../assets/img/iaf-bg2.webp";
 
 
 export const slideFadeInUp = keyframes`
@@ -37,6 +37,7 @@ export const Container = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
   overflow: scroll;
+  background-color: #333;
   background-image: url(${Design});
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -210,16 +211,16 @@ export const CaptionsContainer = styled.div`
 export const CaptionCard = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: #fff;
   border-radius: 2rem;
-  height: 18rem;
+  height: 22rem;
+  background-color: #111;
   width: 18%;
   margin: 0.8rem;
+  cursor: pointer;
   min-width: 12rem;
-  box-shadow: 0 0 0.8rem 0.15rem ${PRI_COLOR_FADED};
+  box-shadow: 0 0 0.2rem 0.1rem ${PRI_COLOR_FADED};
   justify-content: center;
   align-items: center;
-  padding: 1rem;
   animation: ${slideInUp} 1.2s linear;
 
   &:hover {
@@ -230,22 +231,37 @@ export const CaptionCard = styled.div`
     width: 100%;
     align-self: center;
   }
+
+  img {
+    border-radius: 2rem 2rem 0 0;
+  }
 `;
 
 export const CaptionText = styled.p`
   text-align: center;
   color: ${PRI_COLOR};
-  word-break: break-all;
-  font-size: 0.6rem;
+  word-break: break-word;
+  font-size: 0.8rem;
   margin-block-start: 0rem;
+  padding: 0.5rem;
+
+  &.stat {
+    padding: 0rem;
+    margin: 0px;
+    color: ${PRI_COLOR_FADED};
+
+    &.smaller {
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
+  }
 `;
 
 export const CaptionCardHeader = styled(CaptionText)`
   margin-block-end: 0rem;
-  margin-bottom: 1rem;
-  color: rgba(0,0,0,0.9);
   word-break: break-word;
   font-size: 1.3rem;
+  line-height: 1.2rem;
   &:first-letter {
     text-transform: uppercase;
     font-size: 1.8rem;
@@ -263,6 +279,7 @@ export const EmptyContentText = styled.p`
 export const WelcomeText = styled(CaptionText)`
   word-break: break-word;
   font-size: 7.2rem;
+  color: #fff;
   animation: ${slideInUp} 1.2s ease-in;
   &:first-letter {
     text-transform: uppercase;

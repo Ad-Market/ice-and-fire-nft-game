@@ -24,6 +24,7 @@ struct FighterAttributes {
 
 struct Fighter {
     uint256 tokenId;
+    uint256 createdAt;
     FighterAttributes attributes;
 }
 
@@ -91,7 +92,8 @@ contract IceFire is ERC721 {
                 house: defaultCharacters[_characterIndex].house,
                 age: defaultCharacters[_characterIndex].age
             }),
-            tokenId: newItemId
+            tokenId: newItemId,
+            createdAt: block.timestamp
         });
         nftHolders[newItemId] = msg.sender;
         playerNFT[msg.sender].push(newItemId);

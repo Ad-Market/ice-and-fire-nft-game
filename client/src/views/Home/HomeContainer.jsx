@@ -1,30 +1,31 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Home from "./Home";
 import {
-  getAllWaves,
-} from "../../utils/wave.actions";
+  getAllFighters,
+  getDefaultFighters,
+  getTotalPlayers
+} from "../../utils/fighter.actions";
 import { getContract } from "../../utils/contractUtils";
 
 const HomeContainer = () => {
 
   const [currentAccount, setCurrentAccount] = useState("");
-  const [waves, setWaves] = useState([]);
+  const [defaultFighters, setDefaultFighters] = useState([]);
+  const [totalPlayers, setTotalPlayers] = useState("0");
+  const [myFighters, setMyFighters] = useState([]);
+  const [player1, setPlayer1] = useState('');
+  const [player2, setPlayer2] = useState('')
 
-  const waveListenerCallback = useCallback(
+  const playerMintListenerCallback = useCallback(
     async () => {
-      const onNewWaveSubmitted = (from, date, _message) => {
-        setWaves(prev => [...prev, {
-          address: from,
-          time: (new Date(date * 1000)).toDateString(),
-          message: _message,
-        }
-        ]);
+      const onCharacterNFTMinted = (from, tokenId, fighterIndex) => {
+        console.log(from, tokenId, fighterIndex);
       }
-      const wavesContract = await getContract();
-      wavesContract.on("WaveSubmitted", onNewWaveSubmitted);
+      const iceFireContract = await getContract();
+      iceFireContract.on("CharacterNFTMinted", onCharacterNFTMinted);
 
       return () => {
-        wavesContract.off("WaveSubmitted", onNewWaveSubmitted);
+        iceFireContract.off("CharacterNFTMinted", onCharacterNFTMinted);
       }
     },
     // eslint-disable-next-line
@@ -33,7 +34,7 @@ const HomeContainer = () => {
 
 
   useEffect(() => {
-    waveListenerCallback()
+    playerMintListenerCallback()
     // eslint-disable-next-line
   }, []);
 
@@ -75,6 +76,45 @@ const HomeContainer = () => {
     }
   }
 
+  const playersCount = async () => {
+    try {
+      const players = await getTotalPlayers();
+      setTotalPlayers(players);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const listenerCallback = useCallback(
+    async () => {
+      const onCharacterNFTMinted = () => {
+        setTotalPlayers(prev => parseInt(prev) + 1);
+      }
+      const iceFireContract = await getContract();
+      iceFireContract.on("CharacterNFTMinted", onCharacterNFTMinted);
+
+      return () => {
+        iceFireContract.off("CharacterNFTMinted", onCharacterNFTMinted);
+      }
+    },
+    // eslint-disable-next-line
+    [],
+  )
+
+  const getMyFighters = async () => {
+    try {
+      await getAllFighters((fighters => {
+        if (fighters) {
+          setMyFighters(fighters);
+        }
+      }));
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
   useEffect(() => {
     checkIfWalletIsConnected()
     // eslint-disable-next-line
@@ -82,20 +122,37 @@ const HomeContainer = () => {
 
   useEffect(() => {
     if (currentAccount) {
-      getAllWaves((waves) => {
-        if (waves) {
-          setWaves(waves)
+      getMyFighters();
+      getDefaultFighters((fighters) => {
+        if (fighters) {
+          setDefaultFighters(fighters)
         }
       })
     }
     // eslint-disable-next-line
   }, [currentAccount]);
 
+  useEffect(() => {
+    playersCount()
+  }, [currentAccount]);
+
+  useEffect(() => {
+    listenerCallback()
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <Home
       connectWallet={connectWallet}
       currentAccount={currentAccount}
-      waves={waves}
+      defaultFighters={defaultFighters}
+      player1={player1}
+      player2={player2}
+      playersCount={playersCount}
+      totalPlayers={totalPlayers}
+      myFighters={myFighters}
+      setPlayer1={setPlayer1}
+      setPlayer2={setPlayer2}
     />
   );
 };

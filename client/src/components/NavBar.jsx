@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import { breakpoints, PRI_COLOR, PRI_COLOR_FADED, } from "../utils/constants";
-import { getTotalWaves } from "../utils/wave.actions";
-import { getContract } from "../utils/contractUtils";
 import { EmptyContentText } from ".";
 
 const Navbar = styled.div`
@@ -57,44 +55,7 @@ const BTN = styled.button`
   }
 `
 
-const NavBar = ({ connectWallet, currentAccount }) => {
-  const [totalWaves, setTotalWaves] = useState("0");
-
-  const waveCount = async () => {
-    try {
-      const waves = await getTotalWaves();
-      setTotalWaves(waves);
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  useEffect(() => {
-    waveCount()
-  }, [currentAccount]);
-
-  const listenerCallback = useCallback(
-    async () => {
-      console.log(totalWaves)
-      const onNewWaveSubmitted = () => {
-        setTotalWaves(prev => parseInt(prev) + 1);
-      }
-      const wavesContract = await getContract();
-      wavesContract.on("WaveSubmitted", onNewWaveSubmitted);
-
-      return () => {
-        wavesContract.off("WaveSubmitted", onNewWaveSubmitted);
-      }
-    },
-    // eslint-disable-next-line
-    [],
-  )
-
-
-  useEffect(() => {
-    listenerCallback()
-    // eslint-disable-next-line
-  }, []);
+const NavBar = ({ connectWallet, totalPlayers, currentAccount, playersCount }) => {
 
   return (
     <Navbar>
@@ -107,8 +68,8 @@ const NavBar = ({ connectWallet, currentAccount }) => {
             <BTN onClick={connectWallet}>
               Connect to Wallet on Rinkeby testnet
             </BTN>
-          ) : <BTN onClick={() => waveCount()} >
-            Welcome
+          ) : <BTN onClick={() => playersCount()} >
+            Number of Fighters: {totalPlayers}
           </BTN>
         }
       </MenuContainer>

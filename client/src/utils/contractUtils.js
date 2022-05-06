@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
-import abi from "./WavePortal.json";
+import abi from "./IceFire.json";
 
-const contractAddress = "0x2D7aF0C51ED7aBa1186dB2a1921c4abA6DAB0cF0";
+const contractAddress = "0x69252912755F88163ff91A8Eaf7809c78E6cE188";
 
 export const getContract = async () => {
     try {
@@ -9,9 +9,8 @@ export const getContract = async () => {
         if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
-            const wavePortalContract = new ethers.Contract(contractAddress, abi.abi, signer);
-
-            return wavePortalContract;
+            const iceFireContract = new ethers.Contract(contractAddress, abi.abi, signer);
+            return iceFireContract;
         } else {
             throw new Error("Ethereum object doesn't exist!")
         }
