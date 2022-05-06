@@ -10,6 +10,10 @@ import {
 } from "../../components";
 import NavBar from "../../components/NavBar";
 import Design from "../../assets/img/iaf-bg.png";
+import AS from "../../assets/img/arya-stark.webp";
+import IK from "../../assets/img/ice-king.png";
+import JL from "../../assets/img/jamie-lannister.png";
+import JS from "../../assets/img/john-snow.png";
 import styled from "styled-components";
 import { PRI_COLOR_FADED } from "../../utils/constants";
 
@@ -97,6 +101,10 @@ const Home = props => {
               ) : null
             }
             <EmptyContentText>Create new fighter..</EmptyContentText>
+            <img src={JS} alt={`h face`} width="100%" height="100%" />
+            <img src={JL} alt={`t face`} width="100%" height="100%" />
+            <img src={AS} alt={`y face`} width="100%" height="100%" />
+            <img src={IK} alt={`u face`} width="100%" height="100%" />
             <CaptionsContainer>
               {
                 defaultFighters.map(fighter => (<CaptionCard >
