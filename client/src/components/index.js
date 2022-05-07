@@ -307,6 +307,7 @@ export const HomeButton = styled.a`
   padding: 0 0.7rem;
   background-color: ${PRI_COLOR};
   color: #fff;
+  text-align: center;
 
   &:hover {
     box-shadow: 0 0 0.8rem 0.1rem ${PRI_COLOR_FADED};
