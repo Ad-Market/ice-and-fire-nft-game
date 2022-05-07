@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import abi from "./IceFire.json";
 
-const contractAddress = "0xA2AB3d817258d14202a6DC24D2524319c041eA3D";
+const contractAddress = "0x19cBa7bCd79203dc31c116F1f823fe237de8f26b";
 
 export const getContract = async () => {
     try {

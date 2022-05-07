@@ -63,7 +63,7 @@ const Home = props => {
             {
               totalPlayers > 0 ? (
                 <>
-                  <EmptyContentText>My Fighters</EmptyContentText>
+                  <EmptyContentText>Select Two(2) Fighters</EmptyContentText>
                   <CaptionsContainer >
                     {
                       myFighters.map(fighter => (
