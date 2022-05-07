@@ -13,13 +13,25 @@ const HomeContainer = () => {
   const [defaultFighters, setDefaultFighters] = useState([]);
   const [totalPlayers, setTotalPlayers] = useState("0");
   const [myFighters, setMyFighters] = useState([]);
-  const [player1, setPlayer1] = useState('');
-  const [player2, setPlayer2] = useState('')
+  const [player1, setPlayer1] = useState(null);
+  const [player2, setPlayer2] = useState(null)
 
   const playerMintListenerCallback = useCallback(
     async () => {
-      const onCharacterNFTMinted = (from, tokenId, fighterIndex) => {
+      const onCharacterNFTMinted = async (from, tokenId, fighterIndex) => {
         console.log(from, tokenId, fighterIndex);
+        const mintedPlayer = await iceFireContract.getUserNFTAttributes(tokenId);
+        setMyFighters(prev => [...prev, {
+          name: mintedPlayer.attributes.name,
+          image: mintedPlayer.attributes.imageURI,
+          characterIndex: mintedPlayer.attributes.characterIndex.toNumber(),
+          house: mintedPlayer.attributes.house,
+          age: mintedPlayer.attributes.age,
+          attackDamage: mintedPlayer.attributes.attackDamage.toNumber(),
+          healthPoints: mintedPlayer.attributes.healthPoints.toNumber(),
+          tokenId: mintedPlayer.tokenId.toNumber(),
+          createdAt: (new Date(mintedPlayer.createdAt * 1000)).toDateString(),
+        }])
       }
       const iceFireContract = await getContract();
       iceFireContract.on("CharacterNFTMinted", onCharacterNFTMinted);

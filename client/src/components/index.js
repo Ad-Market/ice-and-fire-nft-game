@@ -227,6 +227,11 @@ export const CaptionCard = styled.div`
     box-shadow: 0 0 0.5rem 0.4rem ${PRI_COLOR_FADED};
   }
 
+  &.arena {
+    width: 30%;
+    height: 26rem;
+  }
+
   @media screen and ${breakpoints.sm} {
     width: 100%;
     align-self: center;
@@ -286,3 +291,28 @@ export const WelcomeText = styled(CaptionText)`
     font-weight: bold;
   }
 `;
+
+
+export const HomeButton = styled.a`
+  align-items: center;
+  align-self: center;
+  border-radius: 10px 10px 0 0;
+  color: #000;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 300;
+  height: 2rem;
+  margin: 2px 6px 2px 12px;
+  outline: 0;
+  padding: 0 0.7rem;
+  background-color: ${PRI_COLOR};
+  color: #fff;
+
+  &:hover {
+    box-shadow: 0 0 0.8rem 0.1rem ${PRI_COLOR_FADED};
+  }
+
+  @media screen and (min-width: 756px) {
+    display: inline-flex;
+  }
+`

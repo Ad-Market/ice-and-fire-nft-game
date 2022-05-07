@@ -29,7 +29,7 @@ const MenuContainer = styled.div`
   }
 `;
 
-const BTN = styled.button`
+export const BTN = styled.button`
   align-items: center;
   align-self: center;
   border-radius: 10px 10px 0 0;

@@ -4,14 +4,15 @@ import { Contract } from "ethers";
 const main = async () => {
   const iceFireContractFactory = await ethers.getContractFactory("IceFire");
   const iceFireContract = await iceFireContractFactory.deploy(
-    ["Arya", "Cersi", "Ellia"],
-    ["https://i.imgur.com/pKd5Sdk.png",
-      "https://i.imgur.com/xVu4vFL.png",
-      "https://i.imgur.com/WMB6g9u.png"],
-    [100, 200, 300],
-    [100, 50, 25],
-    ["Stark", "Lannister", "Sand"],
-    [13, 32, 36]);
+    ["Ice King", "John Snow", "Jaime", "Arya"],
+    ["https://cutt.ly/6GNdg65",
+      "https://cutt.ly/OGNdbKY",
+      "https://cutt.ly/pGNdRPA",
+      "https://cutt.ly/UGNdIW4"],
+    [350, 300, 290, 250],
+    [25, 30, 25, 40],
+    ["North", "Stark", "Lannister", "Stark"],
+    [1000, 27, 32, 17]);
 
   await iceFireContract.deployed();
   console.log("Contract deployed to:", iceFireContract.address);

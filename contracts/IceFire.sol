@@ -19,7 +19,7 @@ struct FighterAttributes {
     uint256 maxHealthPoints;
     uint256 attackDamage;
     string house;
-    uint8 age;
+    uint256 age;
 }
 
 struct Fighter {
@@ -41,11 +41,7 @@ contract IceFire is ERC721 {
         uint256 tokenId,
         uint256 characterIndex
     );
-    event AttackComplete(
-        address sender,
-        uint256 attackerHealthPoints,
-        uint256 defenderHealthPoints
-    );
+    event AttackComplete(uint256 defenderTokenId, uint256 defenderHealthPoints);
 
     // Data passed in to the contract when it's first created initializing the characters.
     // We're going to actually pass these values in from run.js.
@@ -55,7 +51,7 @@ contract IceFire is ERC721 {
         uint256[] memory characterHealthPoints,
         uint256[] memory characterAttackDmg,
         string[] memory house,
-        uint8[] memory age
+        uint256[] memory age
     ) payable ERC721("Ice and Fire", "IAF") {
         // Loop through all the characters, and save their values in our contract so
         // we can use them later when we mint our NFTs.
@@ -176,11 +172,7 @@ contract IceFire is ERC721 {
                 defender.attributes.healthPoints -
                 attacker.attributes.attackDamage;
         }
-        emit AttackComplete(
-            msg.sender,
-            attacker.attributes.healthPoints,
-            defender.attributes.healthPoints
-        );
+        emit AttackComplete(defenderTokenId, defender.attributes.healthPoints);
     }
 
     function getUserNFTAttributes(uint256 _tokenId)

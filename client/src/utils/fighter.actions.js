@@ -61,11 +61,22 @@ export const getDefaultFighters = async (cb) => {
   }
 }
 
+export const mintFighter = async (characterIndex, cb) => {
+  try {
+    const iceFireContract = await getContract();
+    await iceFireContract.mintCharacterNFT(characterIndex);
+    await cb(true)
+  } catch (error) {
+    console.log(error);
+    cb()
+  }
+};
+
 export const attackPlayer = async (attacker, defender, cb) => {
   try {
-    // const waveContract = await getContract();
-    // await waveContract.createWave(caption, { gasLimit: 300000 });
-    // await cb(1)
+    const iceFireContract = await getContract();
+    await iceFireContract.attackPlayer(attacker, defender);
+    await cb(true)
   } catch (error) {
     console.log(error);
     cb()
