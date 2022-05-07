@@ -19,7 +19,6 @@ const HomeContainer = () => {
   const playerMintListenerCallback = useCallback(
     async () => {
       const onCharacterNFTMinted = async (from, tokenId, fighterIndex) => {
-        console.log(from, tokenId, fighterIndex);
         const mintedPlayer = await iceFireContract.getUserNFTAttributes(tokenId);
         setMyFighters(prev => [...prev, {
           name: mintedPlayer.attributes.name,
