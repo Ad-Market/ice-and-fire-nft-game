@@ -13,10 +13,10 @@ function Arena({ player1, player2, setPlayer1, setPlayer2 }) {
         async () => {
             const onAttackComplete = (defenderTokenId, defenderHealthPoints) => {
                 if (player1.tokenId === defenderTokenId.toNumber()) {
-                    setPlayer1(prev => ({ ...prev, healthPoints: defenderHealthPoints }));
+                    setPlayer1(prev => ({ ...prev, healthPoints: defenderHealthPoints.toNumber() }));
                 }
                 if (player2.tokenId === defenderTokenId.toNumber()) {
-                    setPlayer1(prev => ({ ...prev, healthPoints: defenderHealthPoints }));
+                    setPlayer1(prev => ({ ...prev, healthPoints: defenderHealthPoints.toNumber() }));
                 }
             }
             const iceFireContract = await getContract();
